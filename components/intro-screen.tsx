@@ -3,7 +3,7 @@
 import { BrandMark } from "./brand-mark"
 import { modules } from "@/lib/training-data"
 
-export function IntroScreen({ onStart }: { onStart: () => void }) {
+export function IntroScreen({ onStart, onCheck }: { onStart: () => void; onCheck: () => void }) {
   const totalQuestions = modules.reduce((n, m) => n + m.questions.length, 0)
 
   return (
@@ -34,13 +34,24 @@ export function IntroScreen({ onStart }: { onStart: () => void }) {
             the quiz to lock it in.
           </p>
 
-          <button
-            onClick={onStart}
-            className="mt-10 inline-flex items-center gap-2 rounded-full bg-clay px-8 py-4 font-sans text-base font-extrabold text-white transition hover:-translate-y-0.5 hover:bg-clay-bright"
-          >
-            Begin training
-            <span aria-hidden="true">→</span>
-          </button>
+          <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row">
+            <button
+              onClick={onStart}
+              className="inline-flex items-center gap-2 rounded-full bg-clay px-8 py-4 font-sans text-base font-extrabold text-white transition hover:-translate-y-0.5 hover:bg-clay-bright"
+            >
+              Begin training
+              <span aria-hidden="true">→</span>
+            </button>
+            <button
+              onClick={onCheck}
+              className="inline-flex items-center gap-2 rounded-full border border-cream/25 px-8 py-4 font-sans text-base font-extrabold text-cream transition hover:-translate-y-0.5 hover:border-clay hover:text-clay-bright"
+            >
+              Take the knowledge check
+            </button>
+          </div>
+          <p className="mt-3 font-mono text-[11px] uppercase tracking-[0.12em] text-cream/45">
+            Knowledge check: pick Easy, Medium or Hard · 20 questions · win a congrats reel
+          </p>
 
           <div className="mt-12 grid w-full max-w-2xl grid-cols-3 gap-4">
             {[

@@ -2,23 +2,49 @@
 
 import { useState } from "react"
 import { modules } from "@/lib/training-data"
+import type { QuizLevel } from "@/lib/quiz-levels"
 import { BrandMark } from "@/components/brand-mark"
 import { IntroScreen } from "@/components/intro-screen"
 import { SectionReader } from "@/components/section-reader"
 import { QuizGame } from "@/components/quiz-game"
 import { CompletionScreen } from "@/components/completion-screen"
+import { DifficultyPicker } from "@/components/difficulty-picker"
+import { KnowledgeCheck } from "@/components/knowledge-check"
+import { CongratsVideo } from "@/components/congrats-video"
+import { CheckRetry } from "@/components/check-retry"
 
-type Phase = "intro" | "reading" | "quiz" | "complete"
+type Phase =
+  | "intro"
+  | "reading"
+  | "quiz"
+  | "complete"
+  | "picker"
+  | "check"
+  | "checkpass"
+  | "checkfail"
 
 export default function Page() {
   const [phase, setPhase] = useState<Phase>("intro")
   const [current, setCurrent] = useState(0)
   const [completed, setCompleted] = useState<number>(0)
+  const [level, setLevel] = useState<QuizLevel | null>(null)
+  const [learner, setLearner] = useState("")
+  const [checkScore, setCheckScore] = useState(0)
 
   function startCourse() {
     setCurrent(0)
     setCompleted(0)
     setPhase("reading")
+  }
+
+  function finishCheck(score: number) {
+    setCheckScore(score)
+    if (level && score >= level.pass) {
+      setPhase("checkpass")
+    } else {
+      setPhase("checkfail")
+    }
+    window.scrollTo({ top: 0, behavior: "smooth" })
   }
 
   function passSection() {
@@ -32,8 +58,52 @@ export default function Page() {
     }
   }
 
-  if (phase === "intro") return <IntroScreen onStart={startCourse} />
+  if (phase === "intro")
+    return <IntroScreen onStart={startCourse} onCheck={() => setPhase("picker")} />
   if (phase === "complete") return <CompletionScreen onRestart={() => setPhase("intro")} />
+
+  if (phase === "picker")
+    return (
+      <DifficultyPicker
+        onBack={() => setPhase("intro")}
+        onPick={(lvl, name) => {
+          setLevel(lvl)
+          setLearner(name)
+          setCheckScore(0)
+          setPhase("check")
+          window.scrollTo({ top: 0, behavior: "smooth" })
+        }}
+      />
+    )
+
+  if (phase === "check" && level)
+    return <KnowledgeCheck level={level} onFinish={finishCheck} onQuit={() => setPhase("picker")} />
+
+  if (phase === "checkpass" && level)
+    return (
+      <CongratsVideo
+        level={level}
+        score={checkScore}
+        name={learner}
+        onReplayLevel={() => setPhase("picker")}
+        onHome={() => setPhase("intro")}
+      />
+    )
+
+  if (phase === "checkfail" && level)
+    return (
+      <CheckRetry
+        level={level}
+        score={checkScore}
+        onRetry={() => {
+          setCheckScore(0)
+          setPhase("check")
+          window.scrollTo({ top: 0, behavior: "smooth" })
+        }}
+        onPickLevel={() => setPhase("picker")}
+        onHome={() => setPhase("intro")}
+      />
+    )
 
   const activeModule = modules[current]
 

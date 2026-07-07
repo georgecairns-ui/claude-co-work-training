@@ -4,15 +4,30 @@ import { useState } from "react"
 import { BrandMark } from "./brand-mark"
 import { quizLevels, type QuizLevel } from "@/lib/quiz-levels"
 
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
+
 export function DifficultyPicker({
   onPick,
   onBack,
 }: {
-  onPick: (level: QuizLevel, name: string) => void
+  onPick: (level: QuizLevel, name: string, email: string) => void
   onBack: () => void
 }) {
   const [name, setName] = useState("")
+  const [email, setEmail] = useState("")
+  const [emailError, setEmailError] = useState(false)
   const [hovered, setHovered] = useState<string | null>(null)
+
+  const emailValid = EMAIL_RE.test(email.trim())
+
+  function pick(lvl: QuizLevel) {
+    if (!emailValid) {
+      setEmailError(true)
+      document.getElementById("learner-email")?.focus()
+      return
+    }
+    onPick(lvl, name.trim(), email.trim())
+  }
 
   return (
     <main className="min-h-screen bg-charcoal text-cream">
@@ -63,6 +78,36 @@ export function DifficultyPicker({
             />
           </div>
 
+          {/* email */}
+          <div className="mx-auto mt-5 max-w-md">
+            <label
+              htmlFor="learner-email"
+              className="mb-2 block text-center font-mono text-[11px] uppercase tracking-[0.14em] text-cream/55"
+            >
+              Your email (to log your result)
+            </label>
+            <input
+              id="learner-email"
+              type="email"
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value)
+                if (emailError && EMAIL_RE.test(e.target.value.trim())) setEmailError(false)
+              }}
+              placeholder="you@company.com"
+              maxLength={80}
+              aria-invalid={emailError}
+              className={`w-full rounded-full border bg-cream/[0.04] px-5 py-3 text-center text-base font-semibold text-cream outline-none transition placeholder:text-cream/30 focus:bg-cream/[0.07] ${
+                emailError ? "border-red-400/70 focus:border-red-400" : "border-cream/15 focus:border-clay"
+              }`}
+            />
+            {emailError && (
+              <p role="alert" className="mt-2 text-center text-sm font-semibold text-red-300">
+                Enter a valid email address to start the quiz.
+              </p>
+            )}
+          </div>
+
           {/* levels */}
           <div className="mt-10 grid gap-5 md:grid-cols-3">
             {quizLevels.map((lvl, i) => {
@@ -72,7 +117,7 @@ export function DifficultyPicker({
                   key={lvl.id}
                   onMouseEnter={() => setHovered(lvl.id)}
                   onMouseLeave={() => setHovered(null)}
-                  onClick={() => onPick(lvl, name.trim())}
+                  onClick={() => pick(lvl)}
                   className="group relative flex flex-col rounded-2xl border border-cream/10 bg-cream/[0.04] p-6 text-left transition hover:-translate-y-1 hover:border-clay/50"
                   style={isHover ? { boxShadow: `0 0 0 1px ${lvl.accent}55, 0 24px 60px -28px ${lvl.accent}` } : undefined}
                 >

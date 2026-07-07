@@ -12,6 +12,7 @@ import { DifficultyPicker } from "@/components/difficulty-picker"
 import { KnowledgeCheck } from "@/components/knowledge-check"
 import { CongratsVideo } from "@/components/congrats-video"
 import { CheckRetry } from "@/components/check-retry"
+import { trackQuizEvent } from "@/lib/track"
 
 type Phase =
   | "intro"
@@ -29,6 +30,7 @@ export default function Page() {
   const [completed, setCompleted] = useState<number>(0)
   const [level, setLevel] = useState<QuizLevel | null>(null)
   const [learner, setLearner] = useState("")
+  const [email, setEmail] = useState("")
   const [checkScore, setCheckScore] = useState(0)
 
   function startCourse() {
@@ -39,11 +41,18 @@ export default function Page() {
 
   function finishCheck(score: number) {
     setCheckScore(score)
-    if (level && score >= level.pass) {
-      setPhase("checkpass")
-    } else {
-      setPhase("checkfail")
+    const passed = level ? score >= level.pass : false
+    if (level) {
+      trackQuizEvent({
+        email,
+        name: learner,
+        event: passed ? "quiz_passed" : "quiz_failed",
+        level: level.label,
+        score,
+        total: level.total,
+      })
     }
+    setPhase(passed ? "checkpass" : "checkfail")
     window.scrollTo({ top: 0, behavior: "smooth" })
   }
 
@@ -66,10 +75,17 @@ export default function Page() {
     return (
       <DifficultyPicker
         onBack={() => setPhase("intro")}
-        onPick={(lvl, name) => {
+        onPick={(lvl, name, learnerEmail) => {
           setLevel(lvl)
           setLearner(name)
+          setEmail(learnerEmail)
           setCheckScore(0)
+          trackQuizEvent({
+            email: learnerEmail,
+            name,
+            event: "quiz_started",
+            level: lvl.label,
+          })
           setPhase("check")
           window.scrollTo({ top: 0, behavior: "smooth" })
         }}

@@ -1,0 +1,14 @@
+{
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "https://claudecofounder.com/cowork-quiz",
+      "permanent": false
+    },
+    {
+      "source": "/cowork-quiz/:path*",
+      "destination": "https://claudecofounder.com/cowork-quiz/:path*",
+      "permanent": false
+    }
+  ]
+}

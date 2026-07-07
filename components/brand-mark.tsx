@@ -5,7 +5,7 @@ export function BrandMark({ className }: { className?: string }) {
   return (
     <span className={cn("relative inline-block overflow-hidden rounded-[22%] shadow-sm", className)}>
       <Image
-        src="/images/cowork-logo.webp"
+        src="/cowork-quiz/images/cowork-logo.webp"
         alt="Claude Cowork Academy logo"
         fill
         sizes="80px"

@@ -1,0 +1,8 @@
+:HL["/cowork-quiz/_next/static/chunks/0shpxj~pct~dk.css","style"]
+:HL["/cowork-quiz/_next/static/media/49bcce62f8e09af8-s.p.0iitys6lds-vt.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/cowork-quiz/_next/static/media/70bc3e132a0a741e-s.p.1409xf.ylxg8g.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/cowork-quiz/_next/static/media/b8256b1b99fdd790-s.p.0ii0fucnp~k9m.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/cowork-quiz/_next/static/media/c3191a2e06136a6d-s.p.0rudd9nuz9-bd.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/cowork-quiz/_next/static/media/f141b5b7abe57afc-s.p.0-k1k9nod8chc.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/cowork-quiz/_next/static/media/f8a66589f2577848-s.p.0pvn16gvsk1jm.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}},"staleTime":300,"buildId":"VKsI_b4RfJZ78oPS6dDvu"}
